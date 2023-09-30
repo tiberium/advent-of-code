@@ -55,7 +55,6 @@ def round_guide_score(round_guide: str) -> int:
         case _:
             raise ValueError(f"Expected round verdict {verdict} not recognized as a valid one. Please choose from [X, Y, Z]")
 
-
     return shape_score + move_score
 
 
