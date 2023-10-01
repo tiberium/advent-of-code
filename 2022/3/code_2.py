@@ -21,18 +21,6 @@ def get_teams_badge(teams_rucksack: List[str]) -> str:
     return ''
 
 
-def find_duplicate_element(rucksack: str) -> str:
-    if len(rucksack) % 2:
-        raise ValueError(f"Rucksack: {rucksack} has a wrong number of elements!")
-
-    compartment_size = int(len(rucksack) / 2)
-    for index in range(compartment_size):
-        if rucksack[index] in rucksack[compartment_size:]:
-            return rucksack[index]
-
-    return ''
-
-
 def get_element_priority(element: str) -> int:
     if not element or not validate_element(element):
         raise ValueError(f"Unrecognized element: {element}, not in a..z nor in A..Z.")
