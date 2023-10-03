@@ -33,21 +33,10 @@ class CargoCrane:
     def __init__(self, stack_crates: List) -> None:
         self.stack_crates = stack_crates
 
-    @property
-    def is_ready(self) -> bool:
-        if not self.stack_crates or len(self.stack_crates) == 0:
-            return False
-
-        return True
-
     def get_top_crates(self) -> str:
         return "".join([stack[-1:][0] for stack in self.stack_crates if stack[-1:][0] != ' '])
 
     def move(self, move: CargoCraneMoveInstruction) -> None:
-        if not self.is_ready:
-            raise Exception(
-                f"The move: {move.raw} cannot be done since the cargo crane is not ready (stack crates are not set).")
-
         self.validate_move(move=move)
 
         self.stack_crates[move.source], popped_items = self.stack_crates[move.source][: move.volume * -1], \
