@@ -52,6 +52,7 @@ class CargoCrane:
 
         self.stack_crates[move.source], popped_items = self.stack_crates[move.source][: move.volume * -1], \
                                                        self.stack_crates[move.source][move.volume * -1:]
+        popped_items.reverse()
         self.stack_crates[move.destination].extend(popped_items)
 
     def validate_move(self, move: CargoCraneMoveInstruction) -> None:
