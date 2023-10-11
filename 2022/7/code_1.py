@@ -18,8 +18,7 @@ class FileSystemNode:
         self.type = node_type
         self.name = name
 
-        self.parent_node = parent_node if parent_node else None
-        self.children : List[FileSystemNode] = []
+        self.parent_node = parent_node
 
         self._size = 0
         self.size = size
@@ -38,8 +37,6 @@ class FileSystemNode:
 
         if self.parent_node:
             self.parent_node.size = value
-
-        return
 
     def ancestors(self) -> List['FileSystemNode']:
         ancestors = []
@@ -73,7 +70,7 @@ class TerminalCommandParser:
         return terminal_line.split()[-1:][0]
 
     @staticmethod
-    def get_file_node(terminal_line: str, parent: FileSystemNode) -> FileSystemNode:
+    def get_file_node(terminal_line: str,parent: FileSystemNode) -> FileSystemNode:
         node_type = FileSystemNodeType.DIRECTORY if terminal_line.startswith("dir") else FileSystemNodeType.FILE
         node_information = terminal_line.split(" ")
 
@@ -95,32 +92,22 @@ class Terminal:
             case TerminalCommandType.CHANGE_DIRECTORY:
                 self.execute_cd(terminal_line=terminal_line)
             case TerminalCommandType.OUTPUT:
-                self.process_ls_output(terminal_line=terminal_line)
+                TerminalCommandParser.get_file_node(terminal_line=terminal_line, parent=self.current_node)
             case TerminalCommandType.LIST:
                 pass
-
-    def process_ls_output(self, terminal_line: str) -> None:
-        file_node = TerminalCommandParser.get_file_node(terminal_line=terminal_line, parent=self.current_node)
-        if file_node not in self.current_node.children:
-            file_node.parent_node = self.current_node
-            self.current_node.children.append(file_node)
 
     def execute_cd(self, terminal_line: str) -> None:
         directory_name = TerminalCommandParser.get_cd_directory_name(terminal_line=terminal_line)
 
         if directory_name == ".." and self.current_node.parent_node:
             self.current_node = self.current_node.parent_node
-        else:
-            try: 
-                node = next(node for node in self.current_node.children if node.name == directory_name)
-            except StopIteration:
-                node = FileSystemNode(node_type=FileSystemNodeType.DIRECTORY, name=directory_name, size=0, parent_node=self.current_node)
-                self.current_node.children.append(node)
+            return
 
-            self.current_node = node
+        node = FileSystemNode(node_type=FileSystemNodeType.DIRECTORY, name=directory_name, size=0, parent_node=self.current_node)
+        self.current_node = node
 
-            if self.current_node not in self.directories:
-                self.directories.append(self.current_node)
+        if self.current_node not in self.directories:
+            self.directories.append(self.current_node)
 
 
 def solution(file_name: str = "input") -> int:
