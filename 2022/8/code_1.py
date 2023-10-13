@@ -12,9 +12,10 @@ def count_visible_trees(trees_line: str, visibility_mask: Optional[List[int]] = 
     sum_of_visible_trees = 0 
     if not visibility_mask[0]:
         sum_of_visible_trees += 1
+        visibility_mask[0] = 1
     if not visibility_mask[-1]:
         sum_of_visible_trees += 1
-    visibility_mask[0] = visibility_mask[-1] = 1
+        visibility_mask[-1] = 1
 
     for index in range(1, len(trees_line)-1):
         highest_left_tree = int(trees_line[highest_tree_left_index])
